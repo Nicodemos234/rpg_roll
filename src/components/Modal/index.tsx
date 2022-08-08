@@ -1,4 +1,5 @@
 import { X } from 'phosphor-react';
+
 import { Input } from '../Input';
 
 interface ModalProps {
