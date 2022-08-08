@@ -1,7 +1,7 @@
+import { DiceTwo } from 'phosphor-react';
+
+import { Container } from '../Container';
+
 export function Rolls() {
-  return (
-    <div>
-      <div>Rolls</div>
-    </div>
-  );
+  return <Container title="Rolls" icon={<DiceTwo size={26} />}></Container>;
 }

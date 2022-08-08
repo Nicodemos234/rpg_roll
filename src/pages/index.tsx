@@ -1,6 +1,7 @@
 import Head from 'next/head';
-import { Header } from '../components/Header/index';
-import { Players } from '../components/Players/index';
+
+import { Header } from '../components/Header';
+import { Players } from '../components/Players';
 import { Rolls } from '../components/Rolls';
 
 export default function Home() {
@@ -10,9 +11,9 @@ export default function Home() {
         <title>Rolling System</title>
       </Head>
 
-      <Header title="Home" />
+      <Header title="Inicio" />
 
-      <main className="flex w-[70%] justify-evenly bg-blue-500">
+      <main className="flex w-[65%] justify-evenly gap-4">
         <Players />
         <Rolls />
       </main>
