@@ -1,9 +1,12 @@
-import { ApolloError, gql, useMutation } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 import { Check, X } from 'phosphor-react';
 import { FormEvent, useState } from 'react';
 
+import { Loading } from '../Loading';
+
 interface ModalProps {
   onClose: () => void;
+  onAddNewPlayer: (player: { name: string; dexterity: number; id: string }) => void;
 }
 
 const ADD_PLAYER = gql`
@@ -14,15 +17,28 @@ const ADD_PLAYER = gql`
   }
 `;
 
-export function Modal({ onClose }: ModalProps) {
-  const [addPlayer, { data, loading, error }] = useMutation(ADD_PLAYER);
+const PUBLISH_PLAYER = gql`
+  mutation MyMutation($id: ID = "") {
+    publishPlayer(where: { id: $id }, to: PUBLISHED) {
+      id
+    }
+  }
+`;
+
+export function Modal({ onClose, onAddNewPlayer }: ModalProps) {
+  const [addPlayer, { loading }] = useMutation(ADD_PLAYER);
+  const [publishPlayer] = useMutation(PUBLISH_PLAYER);
 
   const [name, setName] = useState('');
   const [dexterity, setDexterity] = useState('');
 
   async function handleAddPlayer(e: FormEvent) {
     e.preventDefault();
-    await addPlayer({ variables: { name, dexterity: parseInt(dexterity, 10) } });
+    await addPlayer({ variables: { name, dexterity: parseInt(dexterity, 10) } }).then(({ data }) => {
+      publishPlayer({ variables: { id: data?.createPlayer.id } });
+      console.log(loading);
+      onAddNewPlayer({ name, dexterity: parseInt(dexterity, 10), id: data?.createPlayer.id });
+    });
     onClose();
   }
 
@@ -47,9 +63,15 @@ export function Modal({ onClose }: ModalProps) {
           </div>
         </div>
 
-        <button className="font-semibold transition-colors flex items-center justify-center gap-2 bg-yellow-500 text-zinc-800 p-2 rounded-md hover:bg-yellow-600">
-          <Check size={32} />
-          Concluir
+        <button disabled={loading} className="disabled:opacity-50 font-semibold transition-colors items-center justify-center gap-2 flex bg-yellow-500 text-zinc-800 p-2 rounded-md hover:bg-yellow-600">
+          {loading ? (
+            <Loading />
+          ) : (
+            <div className="items-center justify-center gap-1 flex">
+              <Check size={26} />
+              Concluir
+            </div>
+          )}
         </button>
       </form>
     </div>

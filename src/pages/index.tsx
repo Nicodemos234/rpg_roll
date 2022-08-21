@@ -38,6 +38,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
         players {
           name
           dexterity
+          id
         }
       }
     `,
