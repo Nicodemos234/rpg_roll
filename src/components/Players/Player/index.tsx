@@ -5,9 +5,10 @@ interface PlayerProps {
   dexterity: number;
   id: string;
   onRemove: (id: string) => void;
+  onRoll: (id: string, dexterity: number) => void;
 }
 
-export function Player({ name, dexterity, id, onRemove }: PlayerProps) {
+export function Player({ name, dexterity, id, onRemove, onRoll }: PlayerProps) {
   return (
     <div className="flex items-center bg-zinc-700 py-1 px-2 rounded-md hover:bg-zinc-600 transition-colors">
       <span className="text-lg font-semibold flex-1" title="Nome">
@@ -24,7 +25,7 @@ export function Player({ name, dexterity, id, onRemove }: PlayerProps) {
           <Trash size={32} weight="bold" />
         </button>
 
-        <button className="text-teal-500 hover:scale-110 transition-transform" title="Rolar">
+        <button className="text-teal-500 hover:scale-110 transition-transform" title="Rolar" onClick={() => onRoll(id, dexterity)}>
           <DiceFive size={32} weight="bold" />
         </button>
       </section>

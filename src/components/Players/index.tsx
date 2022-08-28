@@ -61,6 +61,12 @@ export function Players() {
     setIsLoading(false);
     if (!isLoading) setPlayersAvailable(placeholderPlayers);
   }
+
+  function handlePlayerRoll(dexterity: number) {
+    const roll = Math.floor(Math.random() * 10) + 1;
+    const priority = roll + dexterity;
+  }
+
   return (
     <Container title="Jogadores" icon={<User size={28} />}>
       {loading || isLoading ? (
@@ -70,7 +76,7 @@ export function Players() {
       ) : (
         <section className="flex flex-col gap-2 mb-3">
           {playersAvailable?.map(player => {
-            return <Player name={player.name} dexterity={player.dexterity} key={player.id} id={player.id} onRemove={handleRemovePlayer} />;
+            return <Player name={player.name} dexterity={player.dexterity} key={player.id} id={player.id} onRemove={handleRemovePlayer} onRoll={handlePlayerRoll} />;
           })}
         </section>
       )}
