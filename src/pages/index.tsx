@@ -10,6 +10,7 @@ import { client } from '../lib/apollo';
 interface getPlayersQuery {
   data: {
     players: {
+      id: string;
       name: string;
       dexterity: number;
     }[];
