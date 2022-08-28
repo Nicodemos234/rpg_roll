@@ -36,7 +36,6 @@ export function Modal({ onClose, onAddNewPlayer }: ModalProps) {
     e.preventDefault();
     await addPlayer({ variables: { name, dexterity: parseInt(dexterity, 10) } }).then(({ data }) => {
       publishPlayer({ variables: { id: data?.createPlayer.id } });
-      console.log(loading);
       onAddNewPlayer({ name, dexterity: parseInt(dexterity, 10), id: data?.createPlayer.id });
     });
     onClose();

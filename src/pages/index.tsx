@@ -1,23 +1,11 @@
-import { gql } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import Head from 'next/head';
-import { GetServerSideProps } from 'next/types';
 
 import { Header } from '../components/Header';
 import { Players } from '../components/Players';
 import { Rolls } from '../components/Rolls';
-import { client } from '../lib/apollo';
 
-interface getPlayersQuery {
-  data: {
-    players: {
-      id: string;
-      name: string;
-      dexterity: number;
-    }[];
-  };
-}
-
-export default function Home({ data }: getPlayersQuery) {
+export default function Home() {
   return (
     <div className="flex flex-col items-center gap-16">
       <Head>
@@ -25,28 +13,9 @@ export default function Home({ data }: getPlayersQuery) {
       </Head>
       <Header title="Inicio" />
       <main className="flex w-[65%] justify-evenly gap-4">
-        <Players players={data.players} />
+        <Players />
         <Rolls />
       </main>
     </div>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async context => {
-  const { data } = await client.query({
-    query: gql`
-      query GetPlayersQuery {
-        players {
-          name
-          dexterity
-          id
-        }
-      }
-    `,
-  });
-  return {
-    props: {
-      data,
-    },
-  };
-};

@@ -1,21 +1,31 @@
-import { gql, useMutation } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import { Plus, User } from 'phosphor-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Container } from '../Container';
 import { Loading } from '../Loading';
 import { Modal } from '../Modal';
 import { Player } from './Player';
 
-interface PlayersProps {
+interface GetPlayersQueryResponse {
   players: PlayerProps[];
 }
 
 interface PlayerProps {
+  id: string;
   name: string;
   dexterity: number;
-  id: string;
 }
+
+const GET_PLAYERS_QUERY = gql`
+  query GetPlayersQuery {
+    players {
+      name
+      dexterity
+      id
+    }
+  }
+`;
 
 const DELETE_PLAYER = gql`
   mutation deletePlayer($id: ID) {
@@ -25,26 +35,35 @@ const DELETE_PLAYER = gql`
   }
 `;
 
-export function Players({ players }: PlayersProps) {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [playersAvailable, setPlayersAvailable] = useState(players);
+export function Players() {
+  const { data, loading } = useQuery<GetPlayersQueryResponse>(GET_PLAYERS_QUERY);
 
-  const [deletePlayer, { loading }] = useMutation(DELETE_PLAYER);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [playersAvailable, setPlayersAvailable] = useState(data?.players!);
+
+  const [deletePlayer] = useMutation(DELETE_PLAYER);
+
+  useEffect(() => {
+    if (loading === false && data?.players) {
+      setPlayersAvailable(data.players);
+    }
+  }, [loading, data]);
 
   const handleAddNewPlayer = (player: PlayerProps) => {
     setPlayersAvailable([...playersAvailable, player]);
   };
 
   async function handleRemovePlayer(id: string) {
-    let placeholderPlayers = playersAvailable;
-    placeholderPlayers = placeholderPlayers.filter(playerInRoom => playerInRoom.id !== id);
+    setIsLoading(true);
+    let placeholderPlayers: PlayerProps[] = playersAvailable.filter(player => player.id !== id);
     await deletePlayer({ variables: { id } });
-    setPlayersAvailable(placeholderPlayers);
+    setIsLoading(false);
+    if (!isLoading) setPlayersAvailable(placeholderPlayers);
   }
-
   return (
     <Container title="Jogadores" icon={<User size={28} />}>
-      {loading ? (
+      {loading || isLoading ? (
         <div className="flex items-center justify-center my-4">
           <Loading />
         </div>
