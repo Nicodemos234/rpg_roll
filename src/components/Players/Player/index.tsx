@@ -5,7 +5,7 @@ interface PlayerProps {
   dexterity: number;
   id: string;
   onRemove: (id: string) => void;
-  onRoll: (id: string, dexterity: number) => void;
+  onRoll: (dexterity: number) => void;
 }
 
 export function Player({ name, dexterity, id, onRemove, onRoll }: PlayerProps) {
@@ -25,7 +25,7 @@ export function Player({ name, dexterity, id, onRemove, onRoll }: PlayerProps) {
           <Trash size={32} weight="bold" />
         </button>
 
-        <button className="text-teal-500 hover:scale-110 transition-transform" title="Rolar" onClick={() => onRoll(id, dexterity)}>
+        <button className="text-teal-500 hover:scale-110 transition-transform" title="Rolar" onClick={() => onRoll(dexterity)}>
           <DiceFive size={32} weight="bold" />
         </button>
       </section>
